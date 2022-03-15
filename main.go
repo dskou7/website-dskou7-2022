@@ -8,7 +8,9 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/", indexHandler)
+	fileServer := http.FileServer(http.Dir("./static"))
+	//http.HandleFunc("/", indexHandler)
+	http.Handle("/", fileServer)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -28,5 +30,9 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	fmt.Fprint(w, "Hello, Google. This was automatically deployed via github")
+	if r.Method != "GET" {
+		http.NotFound(w, r)
+		return
+	}
+	fmt.Fprint(w, "Hello, Internet. This was deployed from my local machine. Still can't get the auto-deploy to work")
 }
